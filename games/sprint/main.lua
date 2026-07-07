@@ -4,8 +4,8 @@
 -- convert.py; all game logic here is written from scratch.
 --
 --   config.lua        C: tunables (incl. the logical->screen scale)
---   track1_data.lua   Track1: gate/finish geometry (generated)
---   track1_mask.lua   Track1Mask: baked drivable grid (generated)
+--   trackN_data.lua   TrackN: gate/finish geometry (generated, tracks 1-8)
+--   trackN_mask.lua   TrackNMask: baked drivable grid (generated)
 --   track.lua         Track: racing line, projection, wall collision
 --   gamestate.lua     G: shared state
 --   sfx.lua           Sfx: synth effects

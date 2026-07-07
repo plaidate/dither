@@ -1,4 +1,4 @@
--- Classics core: one import for the shared modules.
+-- Dither core: one import for the shared modules.
 
 import "CoreLibs/graphics"
 

@@ -4,7 +4,7 @@
 #
 #   tools/smoke.sh <game> [seconds] [until-grep]
 #
-# e.g. tools/smoke.sh rubble 180 '"gameovers":[1-9]'
+# e.g. tools/smoke.sh sprint 180 '"laps":[1-9]'
 
 set -u
 GAME="${1:?usage: smoke.sh <game> [seconds] [until-grep]}"

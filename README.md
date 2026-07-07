@@ -7,14 +7,19 @@ white strokes on black, Dither leans into the 1-bit raster screen: baked
 bitmaps, sprite sheets, and dithered tone.
 
 Each game links to its own page with controls, rules, and a screenshot.
+The full player's manual (one section per game) is in
+[**MANUAL.md**](MANUAL.md); engine internals and how to add a game are in
+[**DEVGUIDE.md**](DEVGUIDE.md).
 
 | Game | Style |
 |---|---|
 | [Sprint](games/sprint/) | top-down circuit racer (crank wheel, A/B pedals) |
 
-## Playing (no build needed)
+## Play it (no build needed)
 
-Ready-to-run copies of every game live in [`dist/`](dist/).
+Ready-to-run copies of every game live in [`dist/`](dist/), and zipped
+`.pdx` builds are attached to the GitHub
+[Releases](../../releases).
 
 - **On a Playdate**: sign in at [play.date/account/sideload](https://play.date/account/sideload),
   upload the `.pdx` you want (zip it first if your browser requires a

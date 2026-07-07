@@ -32,7 +32,7 @@ C = {
     DRONE_LANES = { -22, 22, 0 },    -- lateral offset (logical px)
 
     CAR_HIT = 18,    -- car-to-car contact radius (logical)
-    PROBE = 9,       -- collision probe ahead of car centre (logical)
+    PROBE = 9,       -- collision probe length (logical; unused: collision is centre-only, see game.lua)
     COUNTDOWN = 3,   -- seconds of 3..2..1 before GO
 
     LAPS_OPTIONS = { 3, 5 },
