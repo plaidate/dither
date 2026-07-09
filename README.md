@@ -1,5 +1,7 @@
 # Dither
 
+> Part of **[plAIdate](https://plaidate.github.io)** — AI-built 1-bit games, ports, and engines for the Playdate.
+
 Original 1-bit **pixel/sprite** games for the [Playdate](https://play.date),
 sharing one thin core library. Sister project to
 [`phosphor`](../phosphor/) (vector beam games) — where phosphor draws
