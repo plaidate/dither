@@ -2,5 +2,5 @@ name=Sprint PD
 author=sdwfrost
 description=Top-down circuit racing: the crank is your wheel. Beat three drones.
 bundleID=com.sdwfrost.dither.sprint
-version=1.0
+version=0.1
 buildNumber=1
