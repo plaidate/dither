@@ -1,6 +1,7 @@
 name=Sprint PD
-author=sdwfrost
+author=Simon Frost
 description=Top-down circuit racing: the crank is your wheel. Beat three drones.
 bundleID=com.sdwfrost.dither.sprint
 version=0.1
-buildNumber=1
+buildNumber=2
+imagePath=launcher
