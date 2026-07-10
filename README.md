@@ -60,7 +60,7 @@ lowercase dirs in `games/`.
 
 ## Licensing
 
-The Lua game code is original work, © 2026 sdwfrost, under the MIT
+The Lua game code is original work, © 2026 Simon Frost, under the MIT
 [LICENSE](LICENSE), staged into every built `.pdx`. Individual games may
 build on public-domain (CC0) third-party artwork; see each game's README
 for its asset provenance and attribution (e.g. Sprint's sprites derive
