@@ -8,10 +8,14 @@
 --   trackN_mask.lua   TrackNMask: baked drivable grid (generated)
 --   track.lua         Track: racing line, projection, wall collision
 --   gamestate.lua     G: shared state
---   sfx.lua           Sfx: synth effects
+--   sfx.lua           Sfx: synth effects + the title music loop
 --   game.lua          Game: car physics, drones, laps, standings
 --   input.lua         Input: crank/pedals + smoke autopilot
---   draw.lua          Draw: rendering
+--   draw.lua          Draw: rendering (incl. time-of-day lighting)
+--
+-- Runs on the Kit.run cabinet. Modes (Kit.mode): title -> toRace (iris
+-- closes on the player car) -> grid (iris opens on the grid) -> play ->
+-- finish (dissolve out) -> over (results dissolve in).
 
 import "lib"
 
@@ -40,56 +44,80 @@ import "input"
 import "draw"
 
 local function startRace()
+    if Harness.enabled then
+        -- smoke rotation: night first, then dusk, then day
+        G.races = G.races + 1
+        G.todSel = 3 - (G.races - 1) % 3
+    end
     Game.reset(C.LAPS_OPTIONS[G.menuSel])
-    G.state = "play"
+    G.tod = G.todSel
+    G.ambient = C.TOD_AMBIENT[G.tod]
+    Music.stop() -- from here the engines are the soundtrack
+    Kit.setMode("toRace", C.FADE_T)
 end
 
-local function tick()
+local function titleTick()
+    if playdate.buttonJustPressed(playdate.kButtonLeft)
+        or playdate.buttonJustPressed(playdate.kButtonRight) then
+        G.menuSel = (G.menuSel % #C.LAPS_OPTIONS) + 1
+    end
+    if playdate.buttonJustPressed(playdate.kButtonUp) then
+        G.trackSel = (G.trackSel - 2) % Track.count + 1
+    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
+        G.trackSel = G.trackSel % Track.count + 1
+    end
+    if playdate.buttonJustPressed(playdate.kButtonB) then
+        G.todSel = G.todSel % #C.TOD_NAMES + 1
+    end
+    if playdate.buttonJustPressed(playdate.kButtonA)
+        or (Harness.enabled and Input.start) then
+        startRace()
+    end
+end
+
+-- cabinet update: Kit.run polls Input, ticks Kit.modeT, calls this,
+-- then Draw.frame(). The race simulation itself lives in Game.race.
+function Game.update(dt)
     G.frame = G.frame + 1
-    Util.runPending(C.DT)
-
-    local turn, accel, brake, start = Input.gather()
-
-    if G.state == "title" then
-        if playdate.buttonJustPressed(playdate.kButtonLeft)
-            or playdate.buttonJustPressed(playdate.kButtonRight) then
-            G.menuSel = (G.menuSel % #C.LAPS_OPTIONS) + 1
+    Music.update(dt)
+    local m = Kit.mode
+    if m == "title" then
+        titleTick()
+    elseif m == "toRace" then
+        if Kit.modeT <= 0 then Kit.setMode("grid", C.FADE_T) end
+    elseif m == "grid" then
+        if Kit.modeT <= 0 then Kit.setMode("play") end
+    elseif m == "play" then
+        Game.race(Input.turn, Input.accel, Input.brake, Input.start)
+    elseif m == "finish" then
+        if Kit.modeT <= 0 then Kit.setMode("over", C.OVER_T) end
+    elseif m == "over" then
+        if Input.start and Kit.modeT <= 0 then
+            Kit.setMode("title")
+            Music.set(Sfx.TITLE)
         end
-        if playdate.buttonJustPressed(playdate.kButtonUp) then
-            G.trackSel = (G.trackSel - 2) % Track.count + 1
-        elseif playdate.buttonJustPressed(playdate.kButtonDown) then
-            G.trackSel = G.trackSel % Track.count + 1
-        end
-        Draw.title()
-        if start then startRace() end
-    elseif G.state == "play" then
-        Game.update(turn, accel, brake, start)
-        if G.state == "over" then Draw.over() else Draw.play() end
-    elseif G.state == "over" then
-        G.overT = G.overT + C.DT
-        Draw.over()
-        if start and G.overT > 0.8 then G.state = "title" end
     end
 end
 
-function playdate.update()
-    Harness.frame(G.frame + 1, tick)
-end
-
-Harness.extra = function(t)
-    t.state = G.state
-    if G.player then
-        t.lap = G.player.lap
-        t.place = G.place
-        t.speed = string.format("%.1f", G.player.speed)
-    end
-end
-
-playdate.getSystemMenu():addMenuItem("restart", function()
-    G.state = "title"
-end)
-
-Game.loadRecords()
-Track.load(G.trackSel)
-math.randomseed(playdate.getSecondsSinceEpoch())
-playdate.display.setRefreshRate(30)
+Kit.run{
+    init = function()
+        Game.loadRecords()
+        Track.load(G.trackSel)
+        Music.set(Sfx.TITLE)
+        playdate.getSystemMenu():addMenuItem("restart", function()
+            Kit.setMode("title")
+            Music.set(Sfx.TITLE)
+        end)
+    end,
+    extra = function(t)
+        t.state = Kit.mode
+        t.tod = C.TOD_NAMES[G.tod]
+        t.ambient = G.ambient
+        t.lights = Light.stats().lights
+        if G.player then
+            t.lap = G.player.lap
+            t.place = G.place
+            t.speed = string.format("%.1f", G.player.speed)
+        end
+    end,
+}

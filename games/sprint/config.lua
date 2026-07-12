@@ -36,4 +36,17 @@ C = {
     COUNTDOWN = 3,   -- seconds of 3..2..1 before GO
 
     LAPS_OPTIONS = { 3, 5 },
+
+    -- time of day (title B button); ambient 1 = day, lighting no-ops.
+    -- Radii are screen px: HEAD_R is the headlight cone disc pushed
+    -- ahead of the nose, GLOW_R the small glow on the car body,
+    -- GANTRY_R the fixed light on the finish gantry.
+    TOD_NAMES = { "DAY", "DUSK", "NIGHT" },
+    TOD_AMBIENT = { 1, 0.55, 0.25 },
+    HEAD_R = { 0, 54, 64 },
+    GLOW_R = 20,
+    GANTRY_R = 44,
+
+    FADE_T = 0.5, -- title->race iris / finish dissolve, seconds each
+    OVER_T = 0.8, -- results dissolve-in, doubles as restart lockout
 }

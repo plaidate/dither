@@ -19,9 +19,21 @@ wall and you scrub off speed.
 | A (title) | Start the race |
 | Left / Right (title) | Choose 3 or 5 laps |
 | Up / Down (title) | Choose track (1–8) |
+| B (title) | Time of day: day / dusk / night |
 
 Your car is the solid white one with the bobbing caret over it; the
-hollow cars are the drones. Best lap time is saved on the device.
+hollow cars are the drones. Best lap time is saved on the device
+(per track).
+
+## Time of day
+
+Races run at **day**, **dusk** or **night** (B on the title screen).
+Day is the classic full-bright render; at dusk and night the shade
+engine darkens the track and every car carries a headlight — a cone of
+light ahead of the nose plus a glow on the body — and the finish
+gantry is lit. At night the headlights are all you have: drones'
+beams telegraph their racing line, and the caret keeps your own car
+findable in the dark.
 
 ## Origin and assets
 

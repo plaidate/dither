@@ -113,3 +113,14 @@ MIT; art may be CC0 third-party, per game).
   tests the car centre only — a nose probe wedges in hairpins. Best lap
   per track persists in the `"records"` datastore with string keys so
   the JSON round-trips.
+- **Glim** (`games/glim/`) — firefly-keeper night garden, the shade
+  stack's identity game, all-procedural (no image files) on the
+  `Kit.run` cabinet loop. Ambient 0.15; the lantern is one `Light.add`
+  whose radius is the crank-trimmed wick (burn ~radius^1.5). Firefly
+  glows are their own lights, coalesced (neighbours within 14px share
+  one add) and capped at `C.FLY_LIGHTS` so the per-frame budget stays
+  ~11 lights worst-case; `Light.stats()` folds into the heartbeat as
+  `lights`/`lightMs`. `Light.at` gates the moth AI — an unlit moth
+  does not advance — and picks their one white eye pixel at draw time.
+  The autopilot herds the nearest firefly, pausing whenever it lags
+  past 0.55x the lantern radius so it can't outrun its own light.

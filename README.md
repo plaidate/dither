@@ -16,6 +16,8 @@ The full player's manual (one section per game) is in
 | Game | Style |
 |---|---|
 | [Sprint](games/sprint/) | top-down circuit racer (crank wheel, A/B pedals) |
+| [Glim](games/glim/) | firefly-keeper night garden (crank trims the lantern wick) |
+| [Skimmer](games/skimmer/) | into-the-screen dragonfly super-scaler (crank trims the throttle) |
 
 ## Play it (no build needed)
 

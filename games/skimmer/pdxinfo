@@ -1,0 +1,7 @@
+name=Skimmer
+author=Simon Frost
+description=Fly fast and low over a dusk pond: dodge the reeds, eat the midges.
+bundleID=com.sdwfrost.dither.skimmer
+version=0.1
+buildNumber=1
+imagePath=launcher

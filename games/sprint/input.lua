@@ -58,3 +58,9 @@ function Input.gather()
         or playdate.buttonJustPressed(playdate.kButtonB)
     return turn, accel, brake, start
 end
+
+-- cabinet entry point: Kit.run polls once per frame, the mode machine
+-- and Game.race read the results from these fields
+function Input.poll()
+    Input.turn, Input.accel, Input.brake, Input.start = Input.gather()
+end

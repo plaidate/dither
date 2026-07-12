@@ -1,9 +1,12 @@
 -- Rendering. The track and 16-angle car sprites are the converted 1-bit
 -- PySprint assets; HUD, finish line and countdown are drawn procedurally.
 -- Logical coords are scaled by C.S and offset by C.OX/OY onto the screen.
+-- At dusk/night the finished scene is darkened by the Light compositor
+-- (headlights + finish gantry); HUD and the player caret draw after it.
 
 local gfx <const> = playdate.graphics
 local floor <const> = math.floor
+local sin <const>, cos <const> = math.sin, math.cos
 
 Draw = {}
 
@@ -89,6 +92,39 @@ end
 local function drawCars()
     for i = #G.cars, 2, -1 do drawCar(G.cars[i]) end -- drones under player
     drawCar(G.player)
+end
+
+-- time-of-day lighting: every car carries a headlight (a disc pushed
+-- ahead of the nose approximates the cone) plus a small body glow, and
+-- the finish gantry holds a fixed light. Light.begin no-ops in DAY
+-- (ambient 1), so the day render is exactly the classic one.
+local function drawLights()
+    Light.begin(G.ambient)
+    if G.ambient < 1 then
+        local r = C.HEAD_R[G.tod]
+        local ahead = r * 0.55
+        for i = 1, #G.cars do
+            local c = G.cars[i]
+            local a = c.ang * math.pi / 8 -- 0 = up, clockwise
+            local x, y = sx(c.x), sy(c.y)
+            Light.add(x + sin(a) * ahead, y - cos(a) * ahead,
+                r, 0.55)
+            Light.add(x, y, C.GLOW_R, 0.5)
+        end
+        local f = Track.finishRect
+        Light.add(sx(f[1] + f[3] / 2), sy(f[2] + f[4] / 2),
+            C.GANTRY_R, 0.55)
+    end
+    Light.finish()
+end
+
+-- track + finish + cars, darkness composited over them, then the caret
+-- (after Light.finish so the player stays findable at night)
+local function drawScene()
+    Draw.field()
+    drawFinish()
+    drawCars()
+    drawLights()
     drawPlayerMark()
 end
 
@@ -103,9 +139,7 @@ local function drawHud()
 end
 
 function Draw.play()
-    Draw.field()
-    drawFinish()
-    drawCars()
+    drawScene()
     drawHud()
 
     if G.countdown > 0 then
@@ -123,11 +157,14 @@ function Draw.title()
         Draw.field()
     end
     gfx.setColor(gfx.kColorBlack)
-    gfx.fillRect(0, 138, C.SCREEN_W, 102)
-    textC("*SPRINT*", C.SCREEN_W / 2, 142)
+    gfx.fillRect(0, 122, C.SCREEN_W, 118)
+    textC("*SPRINT*", C.SCREEN_W / 2, 126)
     local name, diff = Track.meta(G.trackSel)
-    textC(string.format("^ %s (%s) v", name, diff), C.SCREEN_W / 2, 166)
-    textC("< " .. C.LAPS_OPTIONS[G.menuSel] .. " LAPS >", C.SCREEN_W / 2, 186)
+    textC(string.format("^ %s (%s) v", name, diff), C.SCREEN_W / 2, 150)
+    textC("< " .. C.LAPS_OPTIONS[G.menuSel] .. " LAPS >",
+        C.SCREEN_W / 2, 170)
+    textC("(B) " .. C.TOD_NAMES[G.todSel] .. " RACE",
+        C.SCREEN_W / 2, 188)
     local best = G.records and G.records.best[tostring(G.trackSel)]
     textC("BEST LAP " .. timeStr(best), C.SCREEN_W / 2, 206)
     if G.frame % 30 < 20 then
@@ -136,9 +173,7 @@ function Draw.title()
 end
 
 function Draw.over()
-    Draw.field()
-    drawFinish()
-    drawCars()
+    drawScene()
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(60, 70, C.SCREEN_W - 120, 100)
     gfx.setColor(gfx.kColorWhite)
@@ -148,5 +183,31 @@ function Draw.over()
     textC("BEST LAP " .. timeStr(G.bestLap), C.SCREEN_W / 2, 116)
     if G.frame % 30 < 20 then
         textC("PRESS A TO RACE AGAIN", C.SCREEN_W / 2, 144)
+    end
+end
+
+-- cabinet mode dispatcher, incl. the transitions: title -> race irises
+-- shut on the player car and open again on the grid; the finish
+-- dissolves out and the results dissolve in. No fades mid-race.
+function Draw.frame()
+    local m = Kit.mode
+    if m == "title" then
+        Draw.title()
+    elseif m == "toRace" then
+        Draw.title()
+        Fade.iris(sx(G.player.x), sy(G.player.y),
+            1 - Kit.modeT / C.FADE_T)
+    elseif m == "grid" then
+        Draw.play()
+        Fade.iris(sx(G.player.x), sy(G.player.y),
+            Kit.modeT / C.FADE_T)
+    elseif m == "finish" then
+        Draw.play()
+        Fade.dissolve(1 - Kit.modeT / C.FADE_T)
+    elseif m == "over" then
+        Draw.over()
+        Fade.dissolve(Kit.modeT / C.OVER_T)
+    else
+        Draw.play()
     end
 end

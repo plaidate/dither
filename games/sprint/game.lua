@@ -57,7 +57,6 @@ function Game.reset(laps)
     G.lapStartFrame = 0
     G.place = 1
     G.lastLap = nil
-    G.overT = 0
 end
 
 -- world position + facing of a drone from its arc-length and lane
@@ -93,6 +92,7 @@ function Game.onPlayerLap()
         Game.saveRecord()
     end
     Harness.count("laps")
+    if G.tod ~= 1 then Harness.count("nightLaps") end
     Sfx.lap()
 end
 
@@ -196,8 +196,9 @@ local function standings()
     G.place = place
 end
 
--- turn, accel, brake from input; start skips the countdown
-function Game.update(turn, accel, brake, start)
+-- one race step: turn, accel, brake from input; start skips the
+-- countdown. (Kit.run's Game.update(dt) in main.lua dispatches here.)
+function Game.race(turn, accel, brake, start)
     if bumpCooldown > 0 then bumpCooldown = bumpCooldown - 1 end
 
     if G.countdown > 0 then
@@ -233,8 +234,7 @@ function Game.update(turn, accel, brake, start)
         p.finishFrame = G.raceFrame
         Harness.count("finishes")
         if G.place == 1 then Harness.count("wins") end
-        G.state = "over"
-        G.overT = 0
+        Kit.setMode("finish", C.FADE_T)
         if G.place == 1 then Sfx.win() else Sfx.lose() end
     end
 end

@@ -7,7 +7,7 @@
 # A build stages core/* + games/<g>/* into build/<g>/source (pdc wants one
 # source root), writes smokeflag.lua, then runs pdc.
 
-GAMES := sprint
+GAMES := sprint glim skimmer
 
 OUT := out
 

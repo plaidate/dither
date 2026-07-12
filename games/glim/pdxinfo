@@ -1,0 +1,7 @@
+name=Glim
+author=Simon Frost
+description=Firefly-keeper: crank the wick, jar the glow, mind the moths.
+bundleID=com.sdwfrost.dither.glim
+version=0.1
+buildNumber=1
+imagePath=launcher
