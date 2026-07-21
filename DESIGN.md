@@ -90,6 +90,28 @@ Existing thin core stays: `cutil.lua` (Util), `harness.lua` (Harness),
   via `Scaler.bendAt(sy)`. Draw order: sky vgrad -> Para ->
   Scaler.floor -> Scaler.flush -> near actors -> Light -> Fade/HUD.
   `Scaler.stats()` for the harness.
+Wave 2 grew the stack where the games needed it:
+
+- **`light.lua`** gained **occluders and cones**. `Light.wall(x1, y1,
+  x2, y2)` / `Light.box(x, y, w, h)` register shadow-casting segments
+  for the frame; each light carves their shadow quads into its own
+  band mask, so a crate throws a real shadow you can stand in.
+  `Light.cone(x, y, r, dir, spread, falloff)` is a wedge instead of a
+  disc — beams, torches, guard sight cones. `Light.at` honours both,
+  and `Light.blocked(ax, ay, bx, by)` exposes the same occluders as a
+  line-of-sight test, so "can that guard see me" and "am I in shadow"
+  are answered by the geometry the player is looking at.
+- **`dsave.lua` (Save)** — three-slot campaign progress
+  (`{v, meta{name, place, pct, time}, data}` per slot), with the JSON
+  round-trip rules documented where they bite.
+- **`dstory.lua` (Story)** — cutscenes as coroutine screenplays:
+  `Story.play(fn)` over blocking primitives (`say`, `wait`, `beat`,
+  `act`, `fade`, `iris`, `flash`, `tune`, `sting`), a typewriter
+  dialogue box with optional portraits, and letterbox/veil/iris
+  furniture drawn after the Light pass.
+- **`dmusic.lua`** grew songs — named patterns played in an `order`,
+  optional 32-step bars, and `Music.sting` fanfares over the bed.
+
 - **`kit.lua` (Kit)** — the fleet cabinet, ported from tiles/voxel:
   `Kit.run{init=, extra=, shotPath=}` (loop, refresh rate, seeding
   before init, Harness wiring, updMs/drwMs EMA), `Kit.setMode/mode/
@@ -125,6 +147,33 @@ that don't use lighting pay nothing.
    update its stalk — darkness is mechanics, not paint). Parallax
    hedge/moon skyline via Para, night music, full harness/autopilot.
    Target ~roost scale (300-450 lines + tiny procedural art).
+3. **skimmer (new)** — a Space Harrier-lineage dragonfly pond skimmer
+   on the scaler; altitude is read off the Cast.blob shadow, distance
+   off the haze.
+
+Wave 2 added four full campaigns, each carried by a different reading
+of the thesis — ten stages, cutscenes, saves and songs apiece:
+
+4. **prowl** — *darkness is cover*. Guards carry `Light.cone`
+   lanterns; every crate and wall is a `Light.wall` occluder throwing
+   a real shadow you can stand in; you are seen exactly when
+   `Light.at(cat) > 0` and `Light.blocked` gives the guard a clear
+   line. Ten heists ending under the Night Watchman's beam.
+5. **beacon** — *you own the only light*. The crank swings a
+   `Light.cone` out to sea and `Light.at(ship)` IS her rudder: lit
+   core turns her at once, fringe turns her slowly, dark holds her
+   course onto the reef. Two glazing bars carve permanent blind
+   sectors out of your own arc. Ten nights of fog, wreckers and oil.
+6. **echo** — *light is memory*. Ambient 0. A ping is a growing
+   `Light.add` plus a reveal front; what objects carry afterwards is a
+   memory that rots, blended with `Scaler.linearHaze` so one number
+   answers both "have I heard this" and "how far is it". Ten caverns,
+   and an owl that closes fastest while you are lit.
+7. **delve** — *light is a consumable you place*. A helmet `Light.cone`
+   and thrown flares that land, burn down and hold a patch of shaft
+   open; the creatures advance only through dark, so a flare is a wall
+   with a fuse. Ten depths, ending with the Warden driven back by
+   light you cannot afford to keep spending.
 
 ## Non-goals
 

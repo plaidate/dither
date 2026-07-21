@@ -7,12 +7,19 @@ with `classics/`.
 
 ## The shared core (`core/`)
 
-Three small files, staged into every build. Games use globals-as-modules
-(`Util`, `Harness`, and per-game `C`, `G`, `Game`, `Input`, `Draw`, ...) —
-that is the repo convention, not an accident.
+Every module is staged into every build. Games use globals-as-modules
+(`Util`, `Harness`, `Shade`, `Light`, `Cast`, `Fade`, `Para`, `Scaler`,
+`Kit`, `Snd`, `Music`, `Save`, `Story`, and per-game `C`, `G`, `Game`,
+`Input`, `Draw`, ...) — that is the repo convention, not an accident.
+Everything precomputes at import and allocates nothing per frame, and
+every module no-ops when a game does not use it, so a release build
+that never lights anything pays nothing for the lighting.
+
+`DESIGN.md` documents the shade stack (`shade`/`light`/`cast`/`fade`/
+`para`/`scaler`) module by module. The rest:
 
 - **`lib.lua`** — the one import a game's `main.lua` starts with. Pulls
-  `CoreLibs/graphics`, then `cutil` and `harness`.
+  `CoreLibs/graphics`, then every core module in dependency order.
 - **`cutil.lua`** — `Util`:
   - `Util.clamp(v, lo, hi)`
   - `Util.after(delay, fn)` / `Util.runPending(dt)` — a delayed-call
@@ -35,6 +42,28 @@ that is the repo convention, not an accident.
     checks `Harness.enabled` and returns synthetic inputs so smoke
     builds play themselves. (Sprint keeps its autopilot local to
     `input.lua`; either style is fine.)
+- **`kit.lua`** — `Kit`, the fleet cabinet: `Kit.run` (loop, refresh
+  rate, seeding, Harness wiring, updMs/drwMs), modes and banners,
+  best-score persistence, shake, debris particles, the painter sort,
+  and the HUD furniture — `Kit.text/panel/title/over/marker`,
+  `Kit.meter` (dithered resource bar), `Kit.list` (menus),
+  `Kit.slots` (save cards).
+- **`dsnd.lua` / `dmusic.lua`** — `Snd` synth pools; `Music`, a
+  step sequencer taking either one looping 16-step pattern or a song
+  of named patterns plus an `order`, with `Music.sting{...}` for
+  fanfares over the bed.
+- **`dsave.lua`** — `Save`, three-slot campaign progress:
+  `Save.use/reset/set/get/flag/unlock/commit/load/summary/any/wipe`,
+  written to the `"save1".."save3"` datastore keys as
+  `{v, meta{name, place, pct, time}, data}`. JSON round-trip rules
+  (string keys, contiguous arrays) are documented in the file and
+  reproduced by the headless runner.
+- **`dstory.lua`** — `Story`, cutscenes as coroutine screenplays.
+  `Story.play(fn)` runs a function full of blocking primitives
+  (`say`, `wait`, `beat`, `act`, `fade`, `iris`, `flash`, `tune`,
+  `sting`, installed as globals while a scene runs);
+  `Story.update(dt, aPressed, bPressed)` first in the game's update,
+  `Story.draw()` last, after the Light pass.
 
 ## Anatomy of a game (`games/<name>/`)
 
@@ -60,17 +89,37 @@ material, scaling only at draw time.
 ## Build system
 
 `make <game>` stages `core/*.lua` + `games/<game>/*` into
-`build/<game>/source` (pdc wants a single source root), deletes
-`README.md` / `screenshot.png` / `*.py` from the staging dir, copies the
+`build/<game>/source` (pdc wants a single source root), deletes `*.md` /
+`screenshot*.png` / `*.py` / `expect.lua` from the staging dir, copies the
 `LICENSE` in, writes `smokeflag.lua`, and runs `pdc` to
 `out/<Title>.pdx`. `make <game>-smoke` does the same with
 `SMOKE_BUILD = true` and produces `out/<Title>Smoke.pdx`.
 
-`tools/smoke.sh <game> [seconds] [until-grep]` builds the smoke variant,
-launches it headlessly in the Simulator, polls the game's datastore dir
-for `err.json` / `smoke.json` (bundle `com.sdwfrost.dither.<game>`),
-optionally exits early when the heartbeat matches `until-grep`, and
-copies the final heartbeat to `results/<game>.json`.
+Smoke builds are SEEDED: `smokeflag.lua` carries `SMOKE_SEED` (from
+`make <game>-smoke SEED=4`, default 1) and `Kit.run` seeds the RNG from
+it, so a smoke run is reproducible — a bot that passes at seed 1 and
+fails at seed 4 has a real bug, not bad luck. Release builds still seed
+from the clock.
+
+Three ways to run a game, cheapest first:
+
+- `lua tools/coretest.lua` — the engine's own self-test (88 checks)
+  against the stubbed SDK in `tools/sdkstub.lua`: ramp coverage,
+  `Light.at` agreeing with the compositor's radii, cone angles, wall
+  occlusion, the depth queue's order, the save JSON round trip, story
+  coroutines, the sequencer. Run it after ANY change to `core/`.
+- `lua tools/headless.lua <game> [frames]` (`SEED=n` to vary) — the
+  whole game under system Lua with drawing no-op'd. It passes when no
+  error latched and the floors in `games/<game>/expect.lua`
+  (`{frames = n, counters = {...}}`, stripped from the pdx) are met.
+  Fast enough to be an inner loop; blind to anything visual.
+- `tools/smoke.sh <game> [seconds] [until-grep]` — the real thing:
+  builds the smoke variant, launches it in the Simulator, polls the
+  game's datastore dir for `err.json` / `smoke.json` (bundle
+  `com.sdwfrost.dither.<game>`), optionally exits early when the
+  heartbeat matches `until-grep`, and copies the final heartbeat to
+  `results/<game>.json` plus a screenshot to `build/<game>-shot.png`.
+  Headless is the gate; the Simulator is the last word.
 
 `dist/` holds committed release builds; `build/`, `out/` and `results/`
 are gitignored scratch.
@@ -87,8 +136,12 @@ are gitignored scratch.
    (deaths, laps, scores), set `Harness.extra` for state fields, and
    make `Input.gather()` return autopilot inputs when
    `Harness.enabled`.
-5. `tools/smoke.sh <name> 180 '"<counter>":[1-9]'` until it passes with
-   no `err.json`.
+5. Write `games/<name>/expect.lua` — the counters that prove the game
+   was actually played through — then iterate on
+   `lua tools/headless.lua <name>` until it PASSes at seeds 1-5, and
+   finish with `tools/smoke.sh <name> 180 '"<counter>":[1-9]'` in the
+   real Simulator, with no `err.json` and a screenshot you have looked
+   at.
 6. Add the game's row to the README table and a section to `MANUAL.md`;
    binary assets (1-bit PNGs) live in the game dir, with any converter
    script (`convert.py` style) kept beside them — converters are

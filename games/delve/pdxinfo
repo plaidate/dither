@@ -1,0 +1,7 @@
+name=Delve
+author=Simon Frost
+description=One lamp, three flares: a mine descent where light is a consumable you place.
+bundleID=com.sdwfrost.dither.delve
+version=0.1
+buildNumber=1
+imagePath=launcher

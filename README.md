@@ -18,6 +18,10 @@ The full player's manual (one section per game) is in
 | [Sprint](games/sprint/) | top-down circuit racer (crank wheel, A/B pedals) |
 | [Glim](games/glim/) | firefly-keeper night garden (crank trims the lantern wick) |
 | [Skimmer](games/skimmer/) | into-the-screen dragonfly super-scaler (crank trims the throttle) |
+| [Prowl](games/prowl/) | ten-heist stealth campaign — guards' light cones, real shadows to hide in |
+| [Beacon](games/beacon/) | ten nights keeping a lighthouse; the crank is the beam, the beam is a ship's rudder |
+| [Echo](games/echo/) | ten caverns flown blind — each ping is a light, and between pings you fly on memory |
+| [Delve](games/delve/) | ten depths of a mine; your lamp burns down and thrown flares are walls of light |
 
 ## Play it (no build needed)
 
@@ -46,15 +50,23 @@ lowercase dirs in `games/`.
   screenshots through the built-in harness
 - `tools/smoke.sh <game> [seconds] [until-grep]` — build the smoke
   variant, run it headlessly in the Simulator, and report
+- `lua tools/headless.lua <game>` — run a whole game off-device under
+  system Lua against a stubbed SDK (`SEED=n` to vary the pinned RNG);
+  it passes when the floors in `games/<game>/expect.lua` are met
+- `lua tools/coretest.lua` — the engine's own 90-check self-test; run
+  it after any change to `core/`
 
 ### Layout
 
-- `core/` — the shared modules: `cutil.lua` (clamp + delayed-call
-  scheduler) and `harness.lua` (the smoke-test harness; a staged
-  `smokeflag.lua` switches it on per build). The same thin core as
-  `classics/`: each game owns its own `playdate.update` loop and the
-  `config.lua` / `gamestate.lua` / `game.lua` / `input.lua` / `draw.lua`
-  module convention.
+- `core/` — the shade engine: `shade` (17-level dither ramps), `light`
+  (dynamic lights, cones, wall occluders, `Light.at`), `cast`, `fade`,
+  `para`, `scaler` (Super Scaler pseudo-3D), plus the cabinet — `kit`
+  (loop, HUD, saves-of-best, particles), `dsnd`/`dmusic`, `dsave`
+  (campaign slots), `dstory` (coroutine cutscenes), `cutil` and
+  `harness` (the smoke-test harness; a staged `smokeflag.lua` switches
+  it on per build). Each game owns its own `playdate.update` loop and
+  the `config.lua` / `gamestate.lua` / `game.lua` / `input.lua` /
+  `draw.lua` module convention. See [DESIGN.md](DESIGN.md).
 - `games/<name>/` — each game's modules plus its bitmaps/sounds.
 - The Makefile stages `core/` + the game into `build/<name>/source` and
   runs `pdc`; `dist/` holds committed release builds. Bundle IDs are

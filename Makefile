@@ -2,14 +2,18 @@
 #
 #   make sprint            build games/sprint -> out/Sprint.pdx
 #   make sprint-smoke      instrumented build -> out/SprintSmoke.pdx
+#   make sprint-smoke SEED=4   same, with a different pinned RNG seed
 #   make all               every game, release builds
 #
 # A build stages core/* + games/<g>/* into build/<g>/source (pdc wants one
-# source root), writes smokeflag.lua, then runs pdc.
+# source root), writes smokeflag.lua, then runs pdc. Smoke builds pin the
+# RNG: smokeflag.lua carries SMOKE_SEED and Kit.run seeds from it, so an
+# autopilot run is reproducible and a seed-dependent failure is a real bug.
 
-GAMES := sprint glim skimmer
+GAMES := sprint glim skimmer prowl beacon echo delve
 
 OUT := out
+SEED ?= 1
 
 define TITLECASE
 $(shell echo $(1) | awk '{print toupper(substr($$0,1,1)) substr($$0,2)}')
@@ -28,7 +32,7 @@ build/$(1)/source: core/*.lua games/$(1)/*
 	mkdir -p $$@ $(OUT)
 	cp core/*.lua $$@/
 	cp -r games/$(1)/* $$@/
-	rm -f $$@/README.md $$@/screenshot.png $$@/*.py
+	rm -f $$@/*.md $$@/screenshot*.png $$@/*.py $$@/expect.lua
 	cp LICENSE $$@/
 	echo 'SMOKE_BUILD = false' > $$@/smokeflag.lua
 
@@ -36,9 +40,10 @@ build/$(1)-smoke/source: core/*.lua games/$(1)/*
 	mkdir -p $$@ $(OUT)
 	cp core/*.lua $$@/
 	cp -r games/$(1)/* $$@/
-	rm -f $$@/README.md $$@/screenshot.png $$@/*.py
+	rm -f $$@/*.md $$@/screenshot*.png $$@/*.py $$@/expect.lua
 	cp LICENSE $$@/
 	echo 'SMOKE_BUILD = true' > $$@/smokeflag.lua
+	echo 'SMOKE_SEED = $(SEED)' >> $$@/smokeflag.lua
 	echo 'SMOKE_SHOT_PATH = "$(CURDIR)/build/$(1)-shot.png"' >> $$@/smokeflag.lua
 
 .PHONY: $(1) $(1)-smoke

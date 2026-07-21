@@ -1,0 +1,7 @@
+name=Echo
+author=Simon Frost
+description=A bat under a hill with no light in it. Call, glimpse, commit.
+bundleID=com.sdwfrost.dither.echo
+version=0.1
+buildNumber=1
+imagePath=launcher

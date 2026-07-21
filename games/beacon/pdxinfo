@@ -1,0 +1,7 @@
+name=Beacon
+author=Simon Frost
+description=Keeper of Vesper Rock: crank the beam, find the hulls, turn them off the reef.
+bundleID=com.sdwfrost.dither.beacon
+version=0.1
+buildNumber=1
+imagePath=launcher

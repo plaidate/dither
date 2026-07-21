@@ -214,3 +214,222 @@ prettier, and every bit as playable.
    panic.
 5. **Use the grace.** After a dunk you're briefly untouchable —
    spend it repositioning into a clear lane, not hesitating.
+
+---
+
+## Prowl
+
+**A cat burgles a sleeping town. Ten heists, and the dark is the only
+floor you can walk on.**
+
+Every guard carries a lantern, and a lantern is a cone of light with a
+hard edge. Crates, walls and pillars throw real shadows — the black
+wedge behind a barrel is a place you can stand. You are seen when the
+light finds you *and* nothing blocks the guard's line; the meter in the
+corner fills while you're lit and drains while you're not, so being
+clipped by a passing beam is survivable and standing in one is not.
+
+### Controls
+
+| Input | Action |
+|---|---|
+| D-pad | Walk |
+| B (hold) | Creep — slow and silent; walking makes noise a guard can follow |
+| A | Take the loot / douse a lamp / open the way out |
+| A / B | Advance dialogue / skip a cutscene |
+
+### How to play
+
+Take every piece of loot on the screen, then reach the exit. Guards
+walk fixed routes and swing their lanterns; noise pulls them off route
+to investigate, which is a tool as much as a mistake — a sound in the
+wrong corner buys you the right corridor.
+
+Some lamps are fixed to the wall and can be **doused**, removing that
+light for the rest of the night. Some lights have legs and no route at
+all. The watchdog in the kennel doesn't care about light: it hears you.
+
+### The ten nights
+
+Fishmonger's Yard teaches the shadow. Cooper's Alley crosses two cones
+so there is no single safe wedge. Lamplighter Row gives you dousing;
+the Kennel takes sight out of the equation; Drunkard's Lane sends a
+light wandering. The Counting House has no cover at all — the only
+light is a floorwalker turning on the spot, and the game is timing.
+Then the Bell Tower, the Gaol, Chapel Yard, and finally **Ashgrave
+Manor**, where the Night Watchman sweeps a long beam down the hall
+with the crown sitting under it. Lifting it wakes the house.
+
+### Tips
+
+1. **Watch the cone, not the guard.** Guards turn faster than they
+   walk; the beam tells you where they'll be looking, not where they
+   are.
+2. **Shadows move.** A wedge that hides you now closes as its light
+   walks past. Plan the shadow you'll be standing in, not this one.
+3. **Creep near anything with ears.** Full speed is loud everywhere.
+4. **Dousing is permanent.** Spend the trip if the room stays dark for
+   the rest of the night.
+
+---
+
+## Beacon
+
+**Ten nights on Vesper Rock. You own the only light for thirty miles,
+and every hull out there is steering by it.**
+
+The crank turns your beam. Up and Down trade its width against its
+reach — the same light spread thin or thrown far. Fog eats the reach.
+And a ship only answers the helm while your beam is *on* her: caught in
+the bright core she turns at once, brushed by the fringe she comes
+round slowly, and left in the dark she holds her course straight onto
+the reef.
+
+### Controls
+
+| Input | Action |
+|---|---|
+| Crank | Swing the beam |
+| Up / Down | Narrow and throw / widen and shorten the beam |
+| A | Strike the lamp, advance dialogue |
+| B | Shutter the lamp (saves oil); skips a cutscene |
+
+### How to play
+
+Stand every hull off the rocks before dawn. The tally at the top counts
+those saved and those lost. Oil drains all night and a wide beam drains
+it faster, so the shutter is a real choice — go dark to save fuel, and
+hope nothing is drifting in while you do.
+
+Two glazing bars sit in front of the filament and cast permanent blind
+sectors into your own arc. They are narrow. They are also exactly where
+a ship will be at the worst moment.
+
+### The ten nights
+
+Traffic first, then brigs that answer only the bright core, then
+colliers that need a beam held on them for a second and a half.
+Night 5 is fog. Night 6 puts a **wrecker** on the headland showing a
+false light to lure hulls onto the rocks — smother it by holding your
+beam on it. Then a squall that shoves the mechanism, a lifeboat you
+must escort out and home on light alone, two wreckers at once, and a
+final storm in which the lamp itself drowns and you crank it back to
+life by hand.
+
+### Tips
+
+1. **Narrow reaches, wide catches.** Sweep wide to find a hull, then
+   narrow to steer her.
+2. **Turn her early.** A hull answers by degrees; the closer to the
+   reef, the less a turn buys.
+3. **Shutter between hulls,** not during — oil spent on empty water is
+   a hull lost at dawn.
+4. **Learn where your blind bars are** and swing through them, never
+   park in them.
+
+---
+
+## Echo
+
+**A bat, ten caverns, and no light at all. You see by shouting.**
+
+The screen is black because the cave is black. Press A and you call:
+a ring of sound spreads out, and for a moment the rock it touches is
+visible. Then it fades. What you have between calls is memory — the
+tunnel dimming in your head at about the rate you'd expect it to.
+
+Distance reads as tone: close rock is crisp, far rock is a whisper of
+grey, and the returning echo comes back pitched and delayed by the real
+round trip. Listen and you can hear how far away the wall is.
+
+### Controls
+
+| Input | Action |
+|---|---|
+| D-pad | Fly — up/down and side to side |
+| A | Call (costs breath) |
+| Crank | Trim your speed |
+| B | Skip a cutscene |
+
+### How to play
+
+Fly the cavern to its end without hitting rock. Calling costs breath;
+moths refill it. That is the whole economy: call often enough to see,
+eat enough to keep calling. The BREATH meter is your budget and the
+DEPTH meter is how far through the cavern you are.
+
+You always have a faint sense of the tunnel immediately around you, so
+a missed call is not instant death — but the teeth in the roof are only
+visible if you asked.
+
+### The ten caverns
+
+Stalactites, then the moth economy, then pillars and pinches. A wind
+that moves you *between* glimpses. Still water that throws your call
+back a second, softer time. Vesper, who calls to you and must be
+answered. A roof so thin your own voice brings it down. Then everything
+at once, and **Owl Light**: the owl closes on you steadily, closes
+faster every time you call, and closest of all while you are lit. To
+see is to be seen.
+
+### Tips
+
+1. **Call on a rhythm,** roughly every two seconds — a steady map beats
+   a panicked one.
+2. **Commit to what you saw.** Flying tentatively through a gap you
+   already read wastes the reveal.
+3. **Moths are fuel, not points.** Detour for them early, before the
+   breath is gone.
+4. **In the finale, silence is speed.** Fly the last gallery on as few
+   calls as you can bear.
+
+---
+
+## Delve
+
+**Ten depths down an old mine. Your lamp is running out, and the things
+down here only move in the dark.**
+
+The helmet lamp is a short cone pointing where you face. Flares are
+light you can *throw*: one lands, burns where it fell, and holds a
+patch of the shaft open. The creatures advance only through darkness,
+so a flare is a wall — and a wall with a fuse.
+
+### Controls
+
+| Input | Action |
+|---|---|
+| D-pad | Walk, climb ropes, aim |
+| A | Jump; light a lantern; advance dialogue |
+| B | Throw a flare; skip a cutscene |
+
+### How to play
+
+Get down. Lanterns on the way are checkpoints, oil refills and save
+points at once — light one and the shaft behind you stays yours.
+Between them, the OIL meter falls, and when it empties you are down to
+what you can throw.
+
+Flares are finite and pooled per depth. Spending one to *see* a route
+and spending one to *hold back* a swarm are the same resource, which is
+the whole game.
+
+### The ten depths
+
+The Adit, Crawlways, then **The Long Fall** — no glowing seams, so the
+only way to read the route is to throw a flare ahead and look. The Sump
+drowns any flare that lands in water. Rockfall, then the Swarm, then
+the Rope Gallery. **The Collapse** takes your lamp and leaves you two
+flares. The Cold Seam, and finally the **Deep Gallery**, where the
+Warden has to be driven back through three galleries by light alone —
+your lamp pushes it slowly, a flare landed at its feet pushes it hard,
+and it follows you between floors.
+
+### Tips
+
+1. **Throw before you fall.** A flare down a shaft you can't read costs
+   one flare; a blind drop costs the run.
+2. **Light every lantern.** They're the only oil in the mine.
+3. **A flare on the ground beats a flare in the air** — lead the thing
+   you're pushing, don't hit it.
+4. **Water kills flares.** In the Sump, throw at ledges.

@@ -1,0 +1,7 @@
+name=Prowl
+author=Simon Frost
+description=A cat burgles a sleeping town. Darkness is cover; lanterns are not.
+bundleID=com.sdwfrost.dither.prowl
+version=0.1
+buildNumber=1
+imagePath=launcher
