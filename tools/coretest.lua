@@ -127,6 +127,44 @@ Light.begin(0)
 Light.add(50, 50, 30)
 ok(Light.at(200, 200) == 0, "midnight floor is black")
 
+-- SHADOW POLARITY. This bug escaped twice, because Light.at cannot see
+-- it and a screenshot only shows it if you measure: a shadow must be
+-- painted in the OPPOSITE colour to the light shape it follows, or it
+-- renders at the wrong band — same-colour-as-its-shape means a shadow
+-- inside a light's own disc comes out fully lit. Instrument the stub
+-- and assert the pairing directly.
+do
+    local g = playdate.graphics
+    local realColor, realPoly, realMode = g.setColor, g.fillPolygon, g.setImageDrawMode
+    local ev, colour = {}, "black"
+    -- a disc light draws its shape as a white image blit (silent) or a
+    -- FillBlack carve (loud); every fillPolygon here is a shadow
+    g.setColor = function(c)
+        colour = (c == g.kColorWhite) and "white" or "black"
+    end
+    g.setImageDrawMode = function(m)
+        if m == g.kDrawModeFillBlack then ev[#ev + 1] = "shape:black" end
+    end
+    g.fillPolygon = function() ev[#ev + 1] = "shadow:" .. colour end
+
+    Light.begin(0.1)
+    Light.add(200, 120, 120, 0.5)
+    Light.wall(140, 50, 140, 190)
+    Light.finish()
+
+    g.setColor, g.fillPolygon, g.setImageDrawMode = realColor, realPoly, realMode
+
+    local paired, sawReach = true, false
+    for i = 1, #ev do
+        if ev[i] == "shape:black" and ev[i + 1] ~= "shadow:white" then
+            paired = false
+        end
+        if ev[i] == "shadow:black" then sawReach = true end
+    end
+    ok(sawReach, "a light's reach carries black shadows")
+    ok(paired, "a carved shape restores its shadow in white")
+end
+
 -- ---- Cast / Fade / Para ---------------------------------------------------
 
 local img = playdate.graphics.image.new(16, 16)

@@ -206,8 +206,12 @@ end
 -- band q here"; false is the carve meaning "brighter than band q".
 local function paintLight(l, r, white)
     if r <= 0 then return end
+    -- drawShape takes `black`, paintShadows takes `white`: passing the
+    -- SAME flag to both would paint a shadow the same colour as the
+    -- shape casting it, which is the whole bug this helper exists to
+    -- make impossible. The shadow is always the opposite.
     drawShape(l, r, not white)
-    paintShadows(l, r, white)
+    paintShadows(l, r, not white)
 end
 
 -- ambient 0..1; 1 = full day, the whole system no-ops
